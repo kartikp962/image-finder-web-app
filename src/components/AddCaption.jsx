@@ -15,6 +15,7 @@ const AddCaption = () => {
   const imageSrc = state.urls.small;
   const canvasRef = useRef(null);
   const [canvas, setCanvas] = useState(null);
+  const [captionText, setCaptionText] = useState(""); // State for custom text
 
   useEffect(() => {
     const canvasInstance = new FabricCanvas(canvasRef.current, {
@@ -90,15 +91,18 @@ const AddCaption = () => {
   };
 
   const addCaption = () => {
-    const text = new FabricText("Add Caption", {
-      left: 50,
-      top: 50,
-      fill: "black",
-      fontSize: 20,
-      backgroundColor: "white",
-    });
-    canvas.add(text);
-    canvas.setActiveObject(text);
+    if (captionText !== "") {
+      const text = new FabricText(captionText || "Random Text", {
+        left: 50,
+        top: 50,
+        fill: "black",
+        fontSize: 20,
+        backgroundColor: "white",
+      });
+      canvas.add(text);
+      canvas.setActiveObject(text);
+      setCaptionText("");
+    }
   };
 
   const downloadCanvasAsImage = () => {
@@ -126,6 +130,16 @@ const AddCaption = () => {
 
         {/* Tools Panel */}
         <div className="space-y-4">
+          {/* Input for Custom Caption */}
+          <div>
+            <input
+              type="text"
+              value={captionText}
+              onChange={(e) => setCaptionText(e.target.value)}
+              placeholder="Enter your caption"
+              className="w-full h-12 px-4 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 focus:outline-none focus:border-blue-500"
+            />
+          </div>
           {/* Add Rectangle */}
           <button
             onClick={addRectangle}
@@ -154,6 +168,7 @@ const AddCaption = () => {
           <button
             onClick={addCaption}
             className={`w-full flex items-center justify-between h-12 text-lg font-medium transition-all duration-200 bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 rounded-lg`}
+            disabled={false}
           >
             <div className="flex items-center">
               <LuType />
